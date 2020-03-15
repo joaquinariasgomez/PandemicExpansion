@@ -7,7 +7,7 @@ A *WHITE* cell is considered as a frontier. This could be a road, a river, or ju
 
 ## Celular automaton rules
 
-A cellular automaton consists of a regular grid of cells, each in one of a finite number of states, in this case _frontier_, _infected_ and _not infected_. For each cell, a set of cells called its neighborhood is defined relative to the specified cell. An initial state (time t = 0) is selected by assigning a state for each cell. A new generation is created (advancing t by 1), according to some fixed rule (generally, a mathematical function) that determines the new state of each cell in terms of the current state of the cell and the states of the cells in its neighborhood.
+A cellular automaton consists of a regular grid of cells, each in one of a finite number of states, in this case _frontier_, _infected_, _not infected_ and _recovered_. For each cell, a set of cells called its neighborhood is defined relative to the specified cell. An initial state (time t = 0) is selected by assigning a state for each cell. A new generation is created (advancing t by 1), according to some fixed rule (generally, a mathematical function) that determines the new state of each cell in terms of the current state of the cell and the states of the cells in its neighborhood.
 
 To define the next iteration of the matrix, for each cell, it will change its state according to the following rules:
 
