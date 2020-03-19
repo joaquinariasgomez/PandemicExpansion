@@ -15,6 +15,7 @@ public:
     int getInfectedIterations() const {return infectedIterations;}
     void setInfected(bool condition) {this->notInfected = condition;}
     void setCured(bool condition) {this->cured = condition;}
+    void setPerson(bool condition) {this->isPerson_ = condition;}
     void incrementInfectedIterations() {this->infectedIterations++;}
 private:
     bool isPerson_;
@@ -38,12 +39,12 @@ public:
         srand (time(NULL));
         for(int x=0; x<width; ++x) {
             for(int y=0; y<height; ++y) {
-                if(rand()%3==0) {
+                //if(rand()%3==0) {
                     m[x][y] = Person(false);  //There is not a person here
-                }
-                else {
-                    m[x][y] = Person();  //There is a person here
-                }
+                //}
+                //else {
+                //    m[x][y] = Person();  //There is a person here
+                //}
             }
         }
     }
@@ -60,7 +61,7 @@ public:
         return m[x][y].isCured();
     }
     
-    void draw(int x, int y) {
+    void infect(int x, int y) {
         if(m[x][y].isPerson()) {
             if(m[x][y].isNotInfected()) {
                 m[x][y].setInfected(false);
@@ -69,6 +70,11 @@ public:
                 m[x][y].setInfected(true);
             }
         }
+    }
+    
+    void draw(int x, int y) {
+        if(m[x][y].isPerson()) return;
+        m[x][y].setPerson(true);
     }
     
     int getNeighbour(int x, int y, int addX, int addY) const {

@@ -77,6 +77,11 @@ void generateNext(Matrix& automata, int& infected, int& cured, int& dead) { //Ge
     sf::sleep(sf::milliseconds(30));
 }
 
+void drawBorder(Matrix& automata, int x, int y) {
+    if(x<0 || x>=(WINDOW_WIDTH/CELL_SIZE) || y<0 || y>=(WINDOW_HEIGHT/CELL_SIZE)) return;
+    automata.draw(x, y);
+}
+
 int main()
 {
     int infected = 0;
@@ -90,6 +95,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Pandemic expansion");
 
     bool isPlaying = true;
+    bool mousePressed = false;
+    bool drawMode = false;
     Matrix automata(GRID_WIDTH, GRID_HEIGHT);
     
     sf::Thread thread(std::bind(&generateNext, automata, infected, cured, dead));
@@ -102,26 +109,39 @@ int main()
         while (window.pollEvent(event))
         {
             // Close window: exit
-            switch(event.type) {
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-                case sf::Event::KeyPressed:
-                    if(event.key.code == sf::Keyboard::P) {
-                        isPlaying = !isPlaying;
-                    }
-                    if(event.key.code == sf::Keyboard::Escape) {
-                        window.close();
-                    }
-                    break;
-                    case sf::Event::MouseButtonPressed:     //Maybe Released?
-                    if(event.mouseButton.button == sf::Mouse::Left) {
-                        int x = double(event.mouseButton.x)/CELL_SIZE;
-                        int y = double(event.mouseButton.y)/CELL_SIZE;
-                        automata.draw(x, y);
-                    }
-                default: break;
+            if(event.type == sf::Event::Closed) {
+                window.close();
             }
+            if(event.type == sf::Event::KeyPressed) {
+                if(event.key.code == sf::Keyboard::P) {
+                    isPlaying = !isPlaying;
+                }
+                if(event.key.code == sf::Keyboard::D) {
+                    drawMode = !drawMode;
+                }
+                if(event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                }
+            }
+            if(event.type == sf::Event::MouseButtonPressed) {
+                mousePressed = true;
+                if(event.mouseButton.button == sf::Mouse::Left && !drawMode) {
+                    int x = double(event.mouseButton.x)/CELL_SIZE;
+                    int y = double(event.mouseButton.y)/CELL_SIZE;
+                    automata.infect(x, y);
+                }
+            }
+            else {
+                if(event.type == sf::Event::MouseButtonReleased) {
+                    mousePressed = false;
+                }
+            }
+        }
+        
+        if(mousePressed && drawMode) {
+            int x = sf::Mouse::getPosition(window).x/CELL_SIZE;
+            int y = sf::Mouse::getPosition(window).y/CELL_SIZE;
+            drawBorder(automata, x, y);
         }
  
         //Draw Grid

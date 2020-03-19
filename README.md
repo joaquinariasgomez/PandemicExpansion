@@ -12,7 +12,7 @@ A cellular automaton consists of a regular grid of cells, each in one of a finit
 To define the next iteration of the matrix, for each cell, it will change its state according to the following rules:
 
 * A *WHITE* cell will not change state.
-* A *BLACK* cell will become a *RED* cell according to the number of *RED* cells of its neighborhood. If it has eight *RED* neightbours, the probabilities of becoming a *RED* cell are 100% (the maximum number of neighbours are eight); if it has four *RED* neightbours, the probabilities are 50%.. and so on.
+* A *BLACK* cell will become a *RED* cell according to the number of *RED* cells of its neighborhood. If it has eight *RED* neighbours, the probabilities of becoming a *RED* cell are 100% (the maximum number of neighbours are eight); if it has four *RED* neighbours, the probabilities are 50%.. and so on.
 * A *RED* cell will become a *GREEN* cell if the time since if became a *RED* cell if greater than a random time. This is a random number to simulate different recover times.
 * A *GREEN* cell will not change state.
 
