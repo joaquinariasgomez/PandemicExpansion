@@ -49,6 +49,14 @@ public:
         }
     }
     
+    void clean() {
+        for(int x=0; x<width; ++x) {
+            for(int y=0; y<height; ++y) {
+                m[x][y] = Person(false);  //There is not a person here
+            }
+        }
+    }
+    
     bool isAPerson(int x, int y) const {
         return m[x][y].isPerson();
     }

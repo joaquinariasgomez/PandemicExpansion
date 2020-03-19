@@ -57,7 +57,7 @@ void drawGrid(Matrix& automata, sf::RenderWindow& window) {
     window.display();
 }
 
-void generateNext(Matrix& automata, int& infected, int& cured, int& dead) { //Generate Values from Column "from" to Column "to"
+void generateNext(Matrix& automata, int& infected, int& cured, int& dead, bool isPlaying) { //Generate Values from Column "from" to Column "to"
     Matrix next(GRID_WIDTH, GRID_HEIGHT);
     int infectedIncrement = 0;
     int curedIncrement = 0;
@@ -74,7 +74,9 @@ void generateNext(Matrix& automata, int& infected, int& cured, int& dead) { //Ge
     dead += deadIncrement;
     
     automata = next;
-    sf::sleep(sf::milliseconds(30));
+    if(isPlaying) {
+        sf::sleep(sf::milliseconds(30));
+    }
 }
 
 void drawBorder(Matrix& automata, int x, int y) {
@@ -97,9 +99,10 @@ int main()
     bool isPlaying = true;
     bool mousePressed = false;
     bool drawMode = false;
+    bool clean = false;
     Matrix automata(GRID_WIDTH, GRID_HEIGHT);
     
-    sf::Thread thread(std::bind(&generateNext, automata, infected, cured, dead));
+    sf::Thread thread(std::bind(&generateNext, automata, infected, cured, dead, isPlaying));
     
     // Start the game loop
     while (window.isOpen())
@@ -118,6 +121,9 @@ int main()
                 }
                 if(event.key.code == sf::Keyboard::D) {
                     drawMode = !drawMode;
+                }
+                if(event.key.code == sf::Keyboard::C) {
+                    clean = true;
                 }
                 if(event.key.code == sf::Keyboard::Escape) {
                     window.close();
@@ -143,11 +149,15 @@ int main()
             int y = sf::Mouse::getPosition(window).y/CELL_SIZE;
             drawBorder(automata, x, y);
         }
+        if(clean) {
+            automata.clean();
+            clean = false;
+        }
  
         //Draw Grid
         drawGrid(automata, window);
         if(isPlaying) {
-            generateNext(automata, infected, cured, dead);
+            generateNext(automata, infected, cured, dead, isPlaying);
             //std::cout << "Dead: " << dead << " Cured: " << cured << std::endl;
             infectedFile << infected << ", ";
             curedFile << cured << ", ";
