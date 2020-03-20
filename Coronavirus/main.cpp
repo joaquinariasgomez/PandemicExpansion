@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>
 #include "matrix.hpp"
 
 #include "ResourcePath.hpp"
@@ -79,9 +80,34 @@ void generateNext(Matrix& automata, int& infected, int& cured, int& dead, bool i
     }
 }
 
-void drawBorder(Matrix& automata, int x, int y) {
+int distance(std::pair<int, int> border, std::pair<int, int> lastBorder) {
+    return std::max(abs(border.first - lastBorder.first), abs(border.second - lastBorder.second));
+}
+
+void drawFromTo(Matrix& automata, std::pair<int, int> from, std::pair<int, int> to) {
+    for(int xpos=from.first+1; xpos<to.first; ++xpos) {
+        automata.draw(xpos, from.second);
+    }
+}
+
+void drawBorder(Matrix& automata, std::pair<int, int> border, std::pair<int, int> lastBorder) {
+    int x = border.first;
+    int y = border.second;
     if(x<0 || x>=(WINDOW_WIDTH/CELL_SIZE) || y<0 || y>=(WINDOW_HEIGHT/CELL_SIZE)) return;
     automata.draw(x, y);
+    if(distance(border, lastBorder) > 1 && lastBorder != std::make_pair(-1000, -1000)) {
+        //std::cout << "Distance: " << distance(border, lastBorder) << std::endl;
+        // Draw border from "lastBorder" to "border"
+        //std::cout << "Value: " << lastBorder.first << ": ";
+        if(border.first > lastBorder.first) {
+            drawFromTo(automata, lastBorder, border);
+        }
+        else {
+            drawFromTo(automata, border, lastBorder);
+        }
+        
+        //std::cout << std::endl;
+    }
 }
 
 int main()
@@ -99,7 +125,7 @@ int main()
     bool isPlaying = true;
     bool mousePressed = false;
     bool drawMode = false;
-    bool clean = false;
+    std::pair<int, int> lastBorder = std::make_pair(-1000, -1000);
     Matrix automata(GRID_WIDTH, GRID_HEIGHT);
     
     sf::Thread thread(std::bind(&generateNext, automata, infected, cured, dead, isPlaying));
@@ -123,7 +149,7 @@ int main()
                     drawMode = !drawMode;
                 }
                 if(event.key.code == sf::Keyboard::C) {
-                    clean = true;
+                    automata.clean();
                 }
                 if(event.key.code == sf::Keyboard::Escape) {
                     window.close();
@@ -140,18 +166,16 @@ int main()
             else {
                 if(event.type == sf::Event::MouseButtonReleased) {
                     mousePressed = false;
+                    lastBorder = std::make_pair(-1000, -1000);
                 }
             }
         }
         
-        if(mousePressed && drawMode) {
+        if(drawMode && mousePressed) {  // Draw point
             int x = sf::Mouse::getPosition(window).x/CELL_SIZE;
             int y = sf::Mouse::getPosition(window).y/CELL_SIZE;
-            drawBorder(automata, x, y);
-        }
-        if(clean) {
-            automata.clean();
-            clean = false;
+            drawBorder(automata, std::make_pair(x, y), lastBorder);
+            lastBorder = std::make_pair(x, y);
         }
  
         //Draw Grid

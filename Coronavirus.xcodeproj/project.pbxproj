@@ -11,6 +11,7 @@
 		D2007411241E3BC200E9FD4C /* curedFile in Resources */ = {isa = PBXBuildFile; fileRef = D2007410241E3BC200E9FD4C /* curedFile */; };
 		D2535505241D6A9E001DDB48 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2535503241D6A9E001DDB48 /* matrix.cpp */; };
 		D29E1DEE241E62830073CFDA /* deadFile in Resources */ = {isa = PBXBuildFile; fileRef = D29E1DED241E62830073CFDA /* deadFile */; };
+		D2C77F2924252E8800FCA9F0 /* AutoFill.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2C77F2724252E8800FCA9F0 /* AutoFill.cpp */; };
 		D2DCB4E7241D66B5001CE3A3 /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = D2DCB4E6241D66B5001CE3A3 /* ResourcePath.mm */; };
 		D2DCB4EA241D66B5001CE3A3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2DCB4E9241D66B5001CE3A3 /* main.cpp */; };
 		D2DCB4ED241D66B5001CE3A3 /* cute_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2DCB4EC241D66B5001CE3A3 /* cute_image.jpg */; };
@@ -25,6 +26,8 @@
 		D2535503241D6A9E001DDB48 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		D2535504241D6A9E001DDB48 /* matrix.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = matrix.hpp; sourceTree = "<group>"; };
 		D29E1DED241E62830073CFDA /* deadFile */ = {isa = PBXFileReference; lastKnownFileType = text; name = deadFile; path = Coronavirus/deadFile; sourceTree = SOURCE_ROOT; };
+		D2C77F2724252E8800FCA9F0 /* AutoFill.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AutoFill.cpp; sourceTree = "<group>"; };
+		D2C77F2824252E8800FCA9F0 /* AutoFill.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AutoFill.hpp; sourceTree = "<group>"; };
 		D2DCB4E1241D66B5001CE3A3 /* Coronavirus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coronavirus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2DCB4E5241D66B5001CE3A3 /* Coronavirus-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Coronavirus-Info.plist"; path = "../Coronavirus-Info.plist"; sourceTree = "<group>"; };
 		D2DCB4E6241D66B5001CE3A3 /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
@@ -73,6 +76,8 @@
 				D2DCB4E4241D66B5001CE3A3 /* Supporting Files */,
 				D2535503241D6A9E001DDB48 /* matrix.cpp */,
 				D2535504241D6A9E001DDB48 /* matrix.hpp */,
+				D2C77F2724252E8800FCA9F0 /* AutoFill.cpp */,
+				D2C77F2824252E8800FCA9F0 /* AutoFill.hpp */,
 			);
 			path = Coronavirus;
 			sourceTree = "<group>";
@@ -195,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2DCB4EA241D66B5001CE3A3 /* main.cpp in Sources */,
+				D2C77F2924252E8800FCA9F0 /* AutoFill.cpp in Sources */,
 				D2DCB4E7241D66B5001CE3A3 /* ResourcePath.mm in Sources */,
 				D2535505241D6A9E001DDB48 /* matrix.cpp in Sources */,
 			);
