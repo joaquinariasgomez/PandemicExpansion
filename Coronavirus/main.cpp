@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include <math.h>
 #include "matrix.hpp"
 
 #include "ResourcePath.hpp"
@@ -85,8 +86,42 @@ int distance(std::pair<int, int> border, std::pair<int, int> lastBorder) {
 }
 
 void drawFromTo(Matrix& automata, std::pair<int, int> from, std::pair<int, int> to) {
-    for(int xpos=from.first+1; xpos<to.first; ++xpos) {
-        automata.draw(xpos, from.second);
+    bool maxX = abs(from.first - to.first) > abs(from.second - to.second);
+    if(maxX) {
+        int toIncrement = abs(from.second - to.second) != 0 ? ceil(abs(from.first - to.first)/abs(from.second - to.second)) : abs(from.first - to.first);  // Number of x to increment one y
+        int incrY = abs(from.second - to.second) == 0 ? 0 : 1;
+        int currentIncrement = 0;
+        for(int xpos=from.first+1; xpos<to.first; ++xpos) {
+            if(to.second > from.second) {
+                automata.draw(xpos, from.second + incrY);   // Bajando
+            }
+            else {
+                automata.draw(xpos, from.second - incrY);   // Subiendo
+            }
+            currentIncrement++;
+            if(currentIncrement == toIncrement) {
+                incrY++;
+                currentIncrement = 0;
+            }
+        }
+    }
+    else {
+        int toIncrement = abs(from.first - to.first) != 0 ? ceil(abs(from.second - to.second)/abs(from.first - to.first)) : abs(from.second - to.second);  // Number of y to increment one x
+        int incrX = abs(from.first - to.first) == 0 ? 0 : 1;
+        int currentIncrement = 0;
+        for(int ypos=from.second+1; ypos<to.second; ++ypos) {
+            if(to.first > from.first) {
+                automata.draw(from.first + incrX, ypos);   // Bajando
+            }
+            else {
+                automata.draw(from.first - incrX, ypos);   // Subiendo
+            }
+            currentIncrement++;
+            if(currentIncrement == toIncrement) {
+                incrX++;
+                currentIncrement = 0;
+            }
+        }
     }
 }
 
@@ -96,17 +131,23 @@ void drawBorder(Matrix& automata, std::pair<int, int> border, std::pair<int, int
     if(x<0 || x>=(WINDOW_WIDTH/CELL_SIZE) || y<0 || y>=(WINDOW_HEIGHT/CELL_SIZE)) return;
     automata.draw(x, y);
     if(distance(border, lastBorder) > 1 && lastBorder != std::make_pair(-1000, -1000)) {
-        //std::cout << "Distance: " << distance(border, lastBorder) << std::endl;
-        // Draw border from "lastBorder" to "border"
-        //std::cout << "Value: " << lastBorder.first << ": ";
-        if(border.first > lastBorder.first) {
-            drawFromTo(automata, lastBorder, border);
+        bool maxX = abs(lastBorder.first - border.first) > abs(lastBorder.second - border.second);
+        if(maxX) {
+            if(border.first > lastBorder.first) {
+                drawFromTo(automata, lastBorder, border);
+            }
+            else {
+                drawFromTo(automata, border, lastBorder);
+            }
         }
         else {
-            drawFromTo(automata, border, lastBorder);
+            if(border.second > lastBorder.second) {
+                drawFromTo(automata, lastBorder, border);
+            }
+            else {
+                drawFromTo(automata, border, lastBorder);
+            }
         }
-        
-        //std::cout << std::endl;
     }
 }
 
