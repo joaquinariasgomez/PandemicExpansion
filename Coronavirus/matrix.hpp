@@ -39,12 +39,12 @@ public:
         srand (time(NULL));
         for(int x=0; x<width; ++x) {
             for(int y=0; y<height; ++y) {
-                //if(rand()%3==0) {
+                if(rand()%3==0) {
                     m[x][y] = Person(false);  //There is not a person here
-                //}
-                //else {
-                //    m[x][y] = Person();  //There is a person here
-                //}
+                }
+                else {
+                    m[x][y] = Person();  //There is a person here
+                }
             }
         }
     }
@@ -55,6 +55,10 @@ public:
                 m[x][y] = Person(false);  //There is not a person here
             }
         }
+    }
+    
+    void setPerson(int x, int y, bool condition) {
+        m[x][y].setPerson(condition);
     }
     
     bool isAPerson(int x, int y) const {
@@ -89,16 +93,20 @@ public:
         int addX2=addX;
         int addY2=addY;
         if(x==(width-1) && addX == 1) {
-            addX2 = -x;
+            //addX2 = -x;
+            return 0;
         }
         if(x==0 && addX == -1) {
-            addX2 = width - 1;
+            //addX2 = width - 1;
+            return 0;
         }
         if(y==(height-1) && addY == 1) {
-            addY2 = -y;
+            //addY2 = -y;
+            return 0;
         }
         if(y==0 && addY == -1) {
-            addY2 = height - 1;
+            //addY2 = height - 1;
+            return 0;
         }
         if(!m[x+addX2][y+addY2].isNotInfected()) {
             return 1;
@@ -106,7 +114,6 @@ public:
         else {
             return 0;
         }
-        //return m[x+addX2][y+addY2];
     }
     
     void set(int x, int y, Person person) {
@@ -125,7 +132,7 @@ public:
             int randomTime = 100*(rand()%100) + 125;
             if(m[x][y].getInfectedIterations() > randomTime) {
                 ++curedIncrement;
-                --infectedIncrement;
+                //--infectedIncrement;
                 m[x][y].setCured(true);
                 m[x][y].setInfected(true);
             }

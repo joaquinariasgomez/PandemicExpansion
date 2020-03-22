@@ -8,16 +8,19 @@
 
 #ifndef AutoFill_hpp
 #define AutoFill_hpp
+#include <list>
 #include "matrix.hpp"
 
 class AutoFill {
 public:
-    AutoFill(const Matrix& automata) {
-        
-    }
+    AutoFill(const Matrix& automata, int x, int y): matrix(automata), x_(x), y_(y) {}
+    void run();
+    void fillElement(int x, int y);
+    Matrix getMatrix() const {return matrix;}
 private:
-    int lastX;
-    int lastY;
+    Matrix matrix;
+    int x_;
+    int y_;
 };
 
 #endif /* AutoFill_hpp */

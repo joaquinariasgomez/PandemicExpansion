@@ -5,7 +5,9 @@
 #include <fstream>
 #include <stdlib.h>
 #include <math.h>
+#include <list>
 #include "matrix.hpp"
+#include "AutoFill.hpp"
 
 #include "ResourcePath.hpp"
 
@@ -151,11 +153,22 @@ void drawBorder(Matrix& automata, std::pair<int, int> border, std::pair<int, int
     }
 }
 
+void checkTrazo(Matrix& automata, std::pair<std::pair<int, int>, std::pair<int, int>> trazo) {  // This algorithm will close trazo
+    std::pair<int, int> firstEl = trazo.first;
+    std::pair<int, int> lastEl = trazo.second;
+    if(distance(firstEl, lastEl) < 3) {
+        // Close trazo
+        drawBorder(automata, firstEl, lastEl);
+    }
+}
+
 int main()
 {
     int infected = 0;
     int cured = 0;
     int dead = 0;
+    std::pair<std::pair<int, int>, std::pair<int, int>> trazo;  // First and last element of a trazo
+    trazo = std::make_pair(std::make_pair(-1000, -1000), std::make_pair(-1000, -1000));
     
     std::ofstream infectedFile("/Users/joaquin/Code/Coronavirus/Coronavirus/infectedFile");
     std::ofstream curedFile("/Users/joaquin/Code/Coronavirus/Coronavirus/curedFile");
@@ -166,6 +179,7 @@ int main()
     bool isPlaying = true;
     bool mousePressed = false;
     bool drawMode = false;
+    bool fillMode = false;
     std::pair<int, int> lastBorder = std::make_pair(-1000, -1000);
     Matrix automata(GRID_WIDTH, GRID_HEIGHT);
     
@@ -188,9 +202,14 @@ int main()
                 }
                 if(event.key.code == sf::Keyboard::D) {
                     drawMode = !drawMode;
+                    if(drawMode) fillMode = false;
                 }
                 if(event.key.code == sf::Keyboard::C) {
                     automata.clean();
+                }
+                if(event.key.code == sf::Keyboard::F) {
+                    fillMode = !fillMode;
+                    if(fillMode) drawMode = false;
                 }
                 if(event.key.code == sf::Keyboard::Escape) {
                     window.close();
@@ -201,13 +220,28 @@ int main()
                 if(event.mouseButton.button == sf::Mouse::Left && !drawMode) {
                     int x = double(event.mouseButton.x)/CELL_SIZE;
                     int y = double(event.mouseButton.y)/CELL_SIZE;
-                    automata.infect(x, y);
+                    if(fillMode) {
+                        AutoFill fill(automata, x, y);
+                        fill.run();
+                        automata = fill.getMatrix();
+                    }
+                    else {
+                        automata.infect(x, y);
+                    }
                 }
             }
             else {
                 if(event.type == sf::Event::MouseButtonReleased) {
                     mousePressed = false;
                     lastBorder = std::make_pair(-1000, -1000);
+                    //Check trazo
+                    if(drawMode) {
+                        int x = sf::Mouse::getPosition(window).x/CELL_SIZE;
+                        int y = sf::Mouse::getPosition(window).y/CELL_SIZE;
+                        trazo.second =std::make_pair(x, y);
+                        checkTrazo(automata, trazo);
+                    }
+                    trazo = std::make_pair(std::make_pair(-1000, -1000), std::make_pair(-1000, -1000));
                 }
             }
         }
@@ -215,6 +249,9 @@ int main()
         if(drawMode && mousePressed) {  // Draw point
             int x = sf::Mouse::getPosition(window).x/CELL_SIZE;
             int y = sf::Mouse::getPosition(window).y/CELL_SIZE;
+            if(trazo.first == std::make_pair(-1000, -1000)) {
+                trazo.first = std::make_pair(x, y);
+            }
             drawBorder(automata, std::make_pair(x, y), lastBorder);
             lastBorder = std::make_pair(x, y);
         }
