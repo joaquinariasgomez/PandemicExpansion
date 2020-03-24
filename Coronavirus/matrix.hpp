@@ -36,7 +36,7 @@ public:
     Matrix(const Matrix& m) = default;
     
     void Initialize() {
-        srand (time(NULL));
+        //srand (time(NULL));
         for(int x=0; x<width; ++x) {
             for(int y=0; y<height; ++y) {
                 if(rand()%3==0) {
@@ -121,6 +121,7 @@ public:
     }
     
     Person getSucessorLife(int x, int y, int& infectedIncrement, int& curedIncrement, int& deadIncrement) {
+        //srand(time(NULL));
         if(!m[x][y].isPerson()) {
             return m[x][y];
         }
@@ -143,7 +144,11 @@ public:
         numInfectedNeighbour = this->getNeighbour(x, y, -1, 0) + this->getNeighbour(x, y, 1, 0) + this->getNeighbour(x, y, 0, -1) + this->getNeighbour(x, y, 0, 1) + this->getNeighbour(x, y, 1, 1) + this->getNeighbour(x, y, -1, -1) + this->getNeighbour(x, y, 1, -1) + this->getNeighbour(x, y, -1, 1);
 
         float probOfGettinInfected = numInfectedNeighbour * 12.5f;    //0 - 100 from 0 - 8
-        bool isGettinInfected = (rand()%100) < probOfGettinInfected;
+        float prob = rand()%100;
+        if(x==0 && y==0) {
+            std::cout << prob << std::endl;
+        }
+        bool isGettinInfected = prob < probOfGettinInfected;
 
         if(isGettinInfected) {
             Person person = new Person(true);

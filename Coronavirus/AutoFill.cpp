@@ -7,6 +7,7 @@
 //
 
 #include "AutoFill.hpp"
+#include <time.h>
 #include <iostream>
 
 bool outsideMatrix(int x, int y) {
@@ -20,7 +21,9 @@ void AutoFill::run() {
 void AutoFill::fillElement(int x, int y) {
     if(!outsideMatrix(x, y)) {
         if(!matrix.isAPerson(x, y)) {
-            matrix.setPerson(x, y, true);
+            if(rand()%10==0) {
+                matrix.setPerson(x, y, true);
+            }
             this->fillElement(x-1, y);
             this->fillElement(x+1, y);
             this->fillElement(x, y-1);
