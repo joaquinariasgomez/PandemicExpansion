@@ -15,6 +15,7 @@
 #define BLACK sf::Color::Black
 #define RED sf::Color::Red
 #define GREEN sf::Color::Green
+#define VIOLET sf::Color(76, 40, 130)
 #define GRAY sf::Color(153, 153, 153)
 
 const int WINDOW_WIDTH = 1920;
@@ -46,7 +47,12 @@ void drawGrid(Matrix& automata, sf::RenderWindow& window) {
                     }
                 }
                 else {
-                    cell.setFillColor(RED);
+                    if(automata.isNoticed(x, y)) {
+                        cell.setFillColor(VIOLET);
+                    }
+                    else {
+                        cell.setFillColor(RED);
+                    }
                 }
             }
             else {
@@ -61,21 +67,23 @@ void drawGrid(Matrix& automata, sf::RenderWindow& window) {
     window.display();
 }
 
-void generateNext(Matrix& automata, int& infected, int& cured, int& dead, bool isPlaying) { //Generate Values from Column "from" to Column "to"
+void generateNext(Matrix& automata, int& infected, int& cured, int& dead, int& notice, bool isPlaying) { //Generate Values from Column "from" to Column "to"
     Matrix next(GRID_WIDTH, GRID_HEIGHT);
     int infectedIncrement = 0;
     int curedIncrement = 0;
     int deadIncrement = 0;
+    int noticeIncrement = 0;
 
     for(int x=0; x<GRID_WIDTH; ++x) {
         for(int y=0; y<GRID_HEIGHT; ++y) {
-            Person person = automata.getSucessorLife(x, y, infectedIncrement, curedIncrement, deadIncrement);
+            Person person = automata.getSucessorLife(x, y, infectedIncrement, curedIncrement, noticeIncrement);
             next.set(x, y, person);
         }
     }
     infected += infectedIncrement;
     cured += curedIncrement;
     dead += deadIncrement;
+    notice += noticeIncrement;
     
     automata = next;
     if(isPlaying) {
@@ -167,12 +175,14 @@ int main()
     int infected = 0;
     int cured = 0;
     int dead = 0;
+    int notice = 0;
     std::pair<std::pair<int, int>, std::pair<int, int>> trazo;  // First and last element of a trazo
     trazo = std::make_pair(std::make_pair(-1000, -1000), std::make_pair(-1000, -1000));
     
     std::ofstream infectedFile("/Users/joaquin/Code/Coronavirus/Coronavirus/infectedFile");
     std::ofstream curedFile("/Users/joaquin/Code/Coronavirus/Coronavirus/curedFile");
     std::ofstream deadFile("/Users/joaquin/Code/Coronavirus/Coronavirus/deadFile");
+    std::ofstream noticeFile("/Users/joaquin/Code/Coronavirus/Coronavirus/noticeFile");
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Pandemic expansion");
 
@@ -183,7 +193,7 @@ int main()
     std::pair<int, int> lastBorder = std::make_pair(-1000, -1000);
     Matrix automata(GRID_WIDTH, GRID_HEIGHT);
     
-    sf::Thread thread(std::bind(&generateNext, automata, infected, cured, dead, isPlaying));
+    //sf::Thread thread(std::bind(&generateNext, automata, infected, cured, dead, notice, isPlaying));
     
     // Start the game loop
     while (window.isOpen())
@@ -259,11 +269,12 @@ int main()
         //Draw Grid
         drawGrid(automata, window);
         if(isPlaying) {
-            generateNext(automata, infected, cured, dead, isPlaying);
+            generateNext(automata, infected, cured, dead, notice, isPlaying);
             //std::cout << "Dead: " << dead << " Cured: " << cured << std::endl;
             infectedFile << infected << ", ";
             curedFile << cured << ", ";
             deadFile << dead << ", ";
+            noticeFile << notice << ", ";
         }
     }
     infectedFile.close();

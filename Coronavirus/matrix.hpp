@@ -6,20 +6,23 @@
 
 class Person {
 public:
-    Person(): isPerson_(true), notInfected(true), cured(false), infectedIterations(0) {}
-    Person(bool isPerson): isPerson_(isPerson), notInfected(true), cured(false), infectedIterations(0) {}
+    Person(): isPerson_(true), notInfected(true), noticed(false), cured(false), infectedIterations(0) {}
+    Person(bool isPerson): isPerson_(isPerson), notInfected(true), noticed(false), cured(false), infectedIterations(0) {}
     Person(const Person& p) = default;
     bool isPerson() const {return isPerson_;}
     bool isNotInfected() const {return notInfected;}
+    bool isNoticed() const {return noticed;}
     bool isCured() const {return cured;}
     int getInfectedIterations() const {return infectedIterations;}
-    void setInfected(bool condition) {this->notInfected = condition;}
+    void setNotInfected(bool condition) {this->notInfected = condition;}
     void setCured(bool condition) {this->cured = condition;}
     void setPerson(bool condition) {this->isPerson_ = condition;}
+    void setNoticed(bool condition) {this->noticed = condition;}
     void incrementInfectedIterations() {this->infectedIterations++;}
 private:
     bool isPerson_;
     bool notInfected;
+    bool noticed;
     bool cured;
     bool dead;
     int infectedIterations;
@@ -39,12 +42,14 @@ public:
         //srand (time(NULL));
         for(int x=0; x<width; ++x) {
             for(int y=0; y<height; ++y) {
-                if(rand()%3==0) {
-                    m[x][y] = Person(false);  //There is not a person here
-                }
-                else {
+                //if(rand()%3==0) {
+                //    m[x][y] = Person(false);  //There is not a person here
+                    //m[x][y] = Person();  //There is a person here
+                //}
+                //else {
+                    //m[x][y] = Person(false);
                     m[x][y] = Person();  //There is a person here
-                }
+                //}
             }
         }
     }
@@ -69,6 +74,10 @@ public:
         return m[x][y].isNotInfected();
     }
     
+    bool isNoticed(int x, int y) const {
+        return m[x][y].isNoticed();
+    }
+    
     bool isCured(int x, int y) const {
         return m[x][y].isCured();
     }
@@ -76,10 +85,10 @@ public:
     void infect(int x, int y) {
         if(m[x][y].isPerson()) {
             if(m[x][y].isNotInfected()) {
-                m[x][y].setInfected(false);
+                m[x][y].setNotInfected(false);
             }
             else {
-                m[x][y].setInfected(true);
+                m[x][y].setNotInfected(true);
             }
         }
     }
@@ -120,8 +129,7 @@ public:
         m[x][y] = person;
     }
     
-    Person getSucessorLife(int x, int y, int& infectedIncrement, int& curedIncrement, int& deadIncrement) {
-        //srand(time(NULL));
+    Person getSucessorLife(int x, int y, int& infectedIncrement, int& curedIncrement, int& noticeIncrement) {
         if(!m[x][y].isPerson()) {
             return m[x][y];
         }
@@ -135,7 +143,14 @@ public:
                 ++curedIncrement;
                 //--infectedIncrement;
                 m[x][y].setCured(true);
-                m[x][y].setInfected(true);
+                m[x][y].setNotInfected(true);
+            }
+            int max = 14 * 15;
+            int min = 4;
+            int randomNoticeTime = (rand()%(max - min + 1) + min);       // --> 0 - 99
+            if(m[x][y].getInfectedIterations() > (randomNoticeTime * 10) && !m[x][y].isNoticed()) {
+                m[x][y].setNoticed(true);
+                ++noticeIncrement;
             }
             return m[x][y];
         }
@@ -145,14 +160,11 @@ public:
 
         float probOfGettinInfected = numInfectedNeighbour * 12.5f;    //0 - 100 from 0 - 8
         float prob = rand()%100;
-        if(x==0 && y==0) {
-            std::cout << prob << std::endl;
-        }
         bool isGettinInfected = prob < probOfGettinInfected;
 
         if(isGettinInfected) {
             Person person = new Person(true);
-            person.setInfected(false);
+            person.setNotInfected(false);
             ++infectedIncrement;
             return person;   //Infected person
         }
